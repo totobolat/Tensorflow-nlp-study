@@ -112,3 +112,17 @@ export_model.compile(
     loss=losses.BinaryCrossentropy(from_logits=False), optimizer="adam", metrics=['accuracy']
 )
 
+df_test = pd.read_csv('/kaggle/input/copy-of-nlp-getting-started/test.csv')
+df_test.tail()
+df_test = df_test.iloc[:,3]
+df_test
+#vectorize_layer.adapt(df_test)
+#df_test = tf.convert_to_tensor(df_test)
+predictions = export_model.predict(df_test)
+
+predictions = np.array([1 if x >= 0.5 else 0 for x in predictions])
+
+df_sub = pd.read_csv('/kaggle/input/copy-of-nlp-getting-started/sample_submission.csv')
+df_sub['target'] = predictions
+df_sub.to_csv('submission.csv',index=False)
+df_sub.tail()
